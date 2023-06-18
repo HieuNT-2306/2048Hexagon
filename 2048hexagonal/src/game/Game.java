@@ -28,7 +28,13 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
 
     private void update() {
-
+        if(Keyboard.pressed[KeyEvent.VK_SPACE]) {
+            System.out.println("space");
+        }
+        if(Keyboard.typed(KeyEvent.VK_W)) {
+            System.out.println("W");
+        }
+        Keyboard.update();
     }
 
     private void render() {
@@ -96,11 +102,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         System.exit(0);
     }
     public void keyPressed(KeyEvent a) {
-
+        Keyboard.keyPressed(a);
     }
 
     public void keyReleased(KeyEvent a) {
-
+        Keyboard.keyReleased(a);
     }
 
     public void keyTyped(KeyEvent a) {
