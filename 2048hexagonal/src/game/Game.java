@@ -17,6 +17,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private Thread game;
     private boolean running;
     private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+    private GameBoard board;
+
     private long startTime;
     private long elapsed;
     private boolean set;
@@ -25,16 +27,26 @@ public class Game extends JPanel implements Runnable, KeyListener {
         setFocusable(true);
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         addKeyListener(this);
+
+        board = new GameBoard(WIDTH/2 - GameBoard.BOARD_WIDTH/2, HEIGHT - GameBoard.BOARD_HEIGHT -10);
     }
 
     private void update() {
-
+        if(Keyboard.pressed[KeyEvent.VK_SPACE]) {
+            System.out.println("space");
+        }
+        if(Keyboard.typed(KeyEvent.VK_W)) {
+            System.out.println("W");
+        }
+        board.update();
+        Keyboard.update();
     }
 
     private void render() {
         Graphics2D g = (Graphics2D) image.getGraphics();
         g.setColor(Color.white);
         g.fillRect(0, 0, WIDTH, HEIGHT);
+        board.render(g);
         g.dispose();
         Graphics2D g2d = (Graphics2D) getGraphics();
         g2d.drawImage(image, 0, 0, null);
@@ -96,11 +108,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         System.exit(0);
     }
     public void keyPressed(KeyEvent a) {
-
+        Keyboard.keyPressed(a);
     }
 
     public void keyReleased(KeyEvent a) {
-
+        Keyboard.keyReleased(a);
     }
 
     public void keyTyped(KeyEvent a) {
