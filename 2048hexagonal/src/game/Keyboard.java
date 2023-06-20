@@ -9,12 +9,10 @@ public class Keyboard {
     }
     public static void update() {
         for (int i = 0; i< 6; i++) {
-            if (i == 0) previous[KeyEvent.VK_W] = pressed[KeyEvent.VK_W];
-            if (i == 1) previous[KeyEvent.VK_E] = pressed[KeyEvent.VK_E];
-            if (i == 2) previous[KeyEvent.VK_D] = pressed[KeyEvent.VK_D];
-            if (i == 3) previous[KeyEvent.VK_X] = pressed[KeyEvent.VK_X];
-            if (i == 4) previous[KeyEvent.VK_Z] = pressed[KeyEvent.VK_Z];
-            if (i == 5) previous[KeyEvent.VK_A] = pressed[KeyEvent.VK_A];
+            if (i == 0) previous[KeyEvent.VK_LEFT] = pressed[KeyEvent.VK_LEFT];
+            if (i == 1) previous[KeyEvent.VK_RIGHT] = pressed[KeyEvent.VK_RIGHT];
+            if (i == 2) previous[KeyEvent.VK_UP] = pressed[KeyEvent.VK_UP];
+            if (i == 3) previous[KeyEvent.VK_DOWN] = pressed[KeyEvent.VK_DOWN];
         }
     }
     public static void keyPressed(KeyEvent e) {
