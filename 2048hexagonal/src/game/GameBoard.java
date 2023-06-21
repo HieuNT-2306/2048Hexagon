@@ -104,11 +104,39 @@ public class GameBoard {
                 if (current == null)
                     continue;
                 current.update();
-                // resetposition
+                resetPosition(current, row, col);
                 if (current.getValue() == WinValue) {
                     win = true;
                 }
             }
+        }
+    }
+    private void resetPosition(Tile current, int row, int col) {
+        if (current == null) return;
+        int x = getTileX(col);
+        int y = getTileY(row);
+        int distX = current.getX() - x;
+        int distY = current.getY() - y;
+        
+        if (Math.abs(distX) < Tile.SLIDE_SPEED) {
+            current.setX(current.getX() - distX);
+        }
+
+        if (Math.abs(distY) < Tile.SLIDE_SPEED) {
+            current.setY(current.getY() - distY);
+        }
+
+        if (distX < 0) {
+            current.setX(current.getX() + Tile.SLIDE_SPEED);
+        }
+        if (distY < 0) {
+            current.setY(current.getY() + Tile.SLIDE_SPEED);
+        }
+        if (distX > 0) {
+            current.setX(current.getX() - Tile.SLIDE_SPEED);
+        }
+        if (distY > 0) {
+            current.setY(current.getY() - Tile.SLIDE_SPEED);
         }
     }
 
@@ -127,6 +155,7 @@ public class GameBoard {
                 board[newRow][newCol] = current;
                 board[newRow - verticalDir][newCol - horizontalDir] = null;
                 board[newRow][newCol].setSlideTo(new Point(newRow, newCol));
+                canMove = true;
             }
             else if(board[newRow][newCol].getValue() == current.getValue() 
             && board[newRow][newCol].canCombine()) {
@@ -228,8 +257,41 @@ public class GameBoard {
         //spawn
         if (canMove) {
             spawmRandom();
-            //kiem tra chet
+            checkDeath();
         }
+    }
+    private void checkDeath() {
+        for(int row = 0; row < ROWS; row++) {
+            for (int col =0; col < COLS; col++) {
+                if (board[row][col] == null) return;
+                if (checkSurroundingTiles(row,col, board[row][col])) return;
+            }
+        }
+        lose = true;
+        //setHighScore(score);
+    }
+    private boolean checkSurroundingTiles(int row,int col,Tile current) {
+        if (row > 0) {
+            Tile check = board[row-1][col];
+            if (check == null) return true;
+            if(current.getValue() == check.getValue()) return true;
+        }
+        if (row < ROWS - 1) {
+            Tile check = board[row+1][col];
+            if (check == null) return true;
+            if(current.getValue() == check.getValue()) return true;
+        }
+        if (col > 0) {
+            Tile check = board[row][col-1];
+            if (check == null) return true;
+            if(current.getValue() == check.getValue()) return true;
+        }
+        if (col < COLS - 1) {
+            Tile check = board[row][col+1];
+            if (check == null) return true;
+            if(current.getValue() == check.getValue()) return true;
+        }
+        return false;
     }
 
     public void checkKeys() {
