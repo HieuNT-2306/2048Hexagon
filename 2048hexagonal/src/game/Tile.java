@@ -13,16 +13,40 @@ public class Tile {
 	public static final int ARC_HEIGHT =15;
 
     private int value;
-    private BufferedImage tileImage;
+
+	private BufferedImage tileImage;
     private Color background_color;
     private Color text_color;
     private int x, y;
     private Font tileFont;
+	private Point slideTo;
+	private boolean canCombine;
 
-     public Tile(int value, int x, int y) {
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+	public boolean canCombine() {
+		return canCombine;
+	}
+
+	public void setCanCombine(boolean canCombine) {
+		this.canCombine = canCombine;
+	}
+
+	public Point getSlideTo() {
+		return slideTo;
+	}
+
+	public void setSlideTo(Point slideTo) {
+		this.slideTo = slideTo;
+	}
+
+    public Tile(int value, int x, int y) {
         this.value = value;
         this.x = x;
         this.y = y;
+		this.slideTo
         tileImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         drawImage();
     }
