@@ -2,6 +2,8 @@ package game;
 
 import javax.swing.JPanel;
 
+import gui.GuiScreen;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -9,18 +11,18 @@ import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
-public class Game extends JPanel implements Runnable, KeyListener {
+public class Game extends JPanel implements Runnable, MouseListener, MouseMotionListener, KeyListener {
     private static final long serialVersionUID = 1L;
     public static int WIDTH = 500;
     public static int HEIGHT = 630;
     public static final Font mainfont = new Font("Bebas Neue Regular", Font.PLAIN, 28);
     private Thread game;
     private boolean running;
-    private GameBoard board;
     private BufferedImage image;
     private long startTime;
     private long elapsed;
     private boolean set;
+    private GuiScreen screen;
 
 
     public Game() {
@@ -31,11 +33,14 @@ public class Game extends JPanel implements Runnable, KeyListener {
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         setPreferredSize(new Dimension(WIDTH , HEIGHT));
         addKeyListener(this);
-        board = new GameBoard(WIDTH/2 - GameBoard.BOARD_WIDTH/2, HEIGHT - GameBoard.BOARD_HEIGHT - 10);
+        addMouseListener(this);
+        addMouseMotionListener(this);
+        //board = new GameBoard(WIDTH/2 - GameBoard.BOARD_WIDTH/2, HEIGHT - GameBoard.BOARD_HEIGHT - 10);
+        screen = GuiScreen.getInstance();
     }
 
     private void update() {
-        board.update();
+        screen.update();
         Keyboard.update();
     }
 
@@ -44,7 +49,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
         Color mainColor = new Color(Setting.mainColor);
         g.setColor(mainColor);
         g.fillRect(0, 0, WIDTH, HEIGHT);
-        board.render(g);
+        screen.render(g);
         g.dispose();
         Graphics2D g2d = (Graphics2D) getGraphics();
         g2d.drawImage(image, 0, 0, null);
@@ -114,6 +119,27 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
 
     public void keyTyped(KeyEvent a) {
+
+    }
+    public void mousePressed(MouseEvent a) {
+        screen.mousePressed(a);
+    }
+    public void mouseEntered(MouseEvent a) {
+
+    }
+    public void mouseReleased(MouseEvent a) {
+        screen.mouseReleased(a);
+    }
+    public void mouseDragged(MouseEvent a) {
+        screen.mouseDragged(a);
+    }
+    public void mouseClicked(MouseEvent a) {
+
+    }
+    public void mouseMoved(MouseEvent a) {
+        screen.mouseMoved(a);
+    }
+    public void mouseExited(MouseEvent a) {
 
     }
 }
