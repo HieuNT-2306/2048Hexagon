@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 
 public class Game extends JPanel implements Runnable, KeyListener {
     private static final long serialVersionUID = 1L;
-    public static int WIDTH = 400;
+    public static int WIDTH = 500;
     public static int HEIGHT = 630;
     public static final Font mainfont = new Font("Bebas Neue Regular", Font.PLAIN, 28);
     private Thread game;
@@ -41,7 +41,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private void render() {
         Graphics2D g = (Graphics2D) image.getGraphics();
-        g.setColor(Color.white);
+        Color mainColor = new Color(Setting.mainColor);
+        g.setColor(mainColor);
         g.fillRect(0, 0, WIDTH, HEIGHT);
         board.render(g);
         g.dispose();
@@ -53,7 +54,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     public void run() {
         int fps = 0, update = 0;
         long fpsTimer = System.currentTimeMillis();
-        double nsPerUpdate = 10000000000.0 / 60;
+        double nsPerUpdate = 1000000000.0 / Setting.FPS;
         double then = System.nanoTime();
         double unprocessed = 0;
         // update queue

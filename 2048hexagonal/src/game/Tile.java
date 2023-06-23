@@ -1,8 +1,7 @@
 package game;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Tile {
@@ -20,6 +19,14 @@ public class Tile {
     private int x, y;
     private Font tileFont;
 	private Point slideTo;
+
+	private boolean beginningAnimation = true;
+	private double scaleFirst = 0.1;
+	private BufferedImage beginningImage;
+
+	private boolean combineAnimation = false;
+	private BufferedImage combineImage;
+	private double scaleCombine = 1.3;
 	private boolean canCombine = true;
 
 	public void setValue(int value) {
@@ -59,59 +66,71 @@ public class Tile {
 		this.y = y;
 	}
 
+	public boolean isCombineAnimation() {
+		return combineAnimation;
+	}
+
+	public void setCombineAnimation(boolean combineAnimation) {
+		this.combineAnimation = combineAnimation;
+		if(combineAnimation)
+			scaleCombine = 1.2;
+	}
+
 	public Tile(int value, int x, int y) {
         this.value = value;
         this.x = x;
         this.y = y;
 		this.slideTo = new Point(x, y);
         tileImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		beginningImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		combineImage = new BufferedImage(WIDTH*2, HEIGHT*2, BufferedImage.TYPE_INT_ARGB);
         drawImage();
     }
 
     private void drawImage() {
 		Graphics2D g = (Graphics2D) tileImage.getGraphics();
 		if (value == 2) {
-			background_color = new Color(0xe9e9e9);
+			background_color = new Color(0xe9e9e9 + Setting.ShiftColor_tile);
 			text_color = new Color(0x000000);
 		}
 		else if (value == 4) {
-			background_color = new Color(0xe6daab);
+			background_color = new Color(0xe6daab + Setting.ShiftColor_tile);
 			text_color = new Color(0x000000);
 		}
 		else if (value == 8) {
-			background_color = new Color(0xf79d3d);
+			background_color = new Color(0xf79d3d + Setting.ShiftColor_tile);
 			text_color = new Color(0xffffff);
 		}
 		else if (value == 16) {
-			background_color = new Color(0xf28007);
+			background_color = new Color(0xf28007 + Setting.ShiftColor_tile);
 			text_color = new Color(0xffffff);
 		}
 		else if (value == 32) {
-			background_color = new Color(0xf55e3b);
+			background_color = new Color(0xf55e3b + Setting.ShiftColor_tile);
 			text_color = new Color(0xffffff);
 		}
 		else if (value == 64) {
-			background_color = new Color(0xff0000);
+			background_color = new Color(0xff0000 + Setting.ShiftColor_tile);
 			text_color = new Color(0xffffff);
 		}
 		else if (value == 128) {
-			background_color = new Color(0xe9de84);
+			background_color = new Color(0xe9de84 + Setting.ShiftColor_tile);
 			text_color = new Color(0xffffff);
 		}
 		else if (value == 256) {
-			background_color = new Color(0xf6e873);
+			background_color = new Color(0xf6e873 + Setting.ShiftColor_tile);
 			text_color = new Color(0xffffff);
 		}
 		else if (value == 512) {
-			background_color = new Color(0xf5e455);
+			background_color = new Color(0xf5e455 + Setting.ShiftColor_tile);
 			text_color = new Color(0xffffff);
 		}
 		else if (value == 1024) {
-			background_color = new Color(0xf7e12c);
+			background_color = new Color(0xf7e12c + Setting.ShiftColor_tile);
 			text_color = new Color(0xffffff);
 		}
 		else if (value == 2048) {
-			background_color = new Color(0xffe400);
+			background_color = new Color(0xffe400 + Setting.ShiftColor_tile);
 			text_color = new Color(0xffffff);
 		}
 		else if(value == 0){
@@ -146,10 +165,45 @@ public class Tile {
 	}
     
     public void update() {
-
+		if(beginningAnimation){
+			AffineTransform transform = new AffineTransform();
+			transform.translate(WIDTH/2 - scaleFirst * WIDTH/2, HEIGHT/2 - scaleFirst * HEIGHT/2);
+			transform.scale(scaleFirst, scaleFirst);
+			Graphics2D g2d = (Graphics2D) beginningImage.getGraphics();
+			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+			g2d.setColor(new Color(0, 0, 0, 0));
+			g2d.fillRect(0, 0, WIDTH, HEIGHT);
+			g2d.drawImage(tileImage, transform, null);
+			scaleFirst += 0.1;
+			g2d.dispose();
+			if(scaleFirst >= 1)
+				beginningAnimation = false;
+		}
+		else if(combineAnimation){
+			AffineTransform transform = new AffineTransform();
+			transform.translate(WIDTH/2 - scaleCombine * WIDTH/2, HEIGHT/2 - scaleCombine * HEIGHT/2);
+			transform.scale(scaleCombine, scaleCombine);
+			Graphics2D g2d = (Graphics2D) combineImage.getGraphics();
+			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+			g2d.setColor(new Color(0, 0, 0, 0));
+			g2d.fillRect(0, 0, WIDTH, HEIGHT);
+			g2d.drawImage(tileImage, transform, null);
+			scaleCombine -= 0.05;
+			g2d.dispose();
+			if(scaleCombine <= 1)
+				combineAnimation = false;
+		}
     }
     public void render(Graphics2D g) {
-        g.drawImage(tileImage, x,y, null);
+		if(beginningAnimation){
+			g.drawImage(beginningImage, x, y, null);
+		}
+		else if(combineAnimation){
+			g.drawImage(combineImage, (int)(x + WIDTH/2 - scaleCombine * WIDTH/2),
+					(int)(y + HEIGHT/2 - scaleCombine * HEIGHT/2), null);
+		}
+        else
+			g.drawImage(tileImage, x,y, null);
     }
 
     public int getValue() {
