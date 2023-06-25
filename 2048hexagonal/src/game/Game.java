@@ -3,6 +3,7 @@ package game;
 import javax.swing.JPanel;
 
 import gui.GuiScreen;
+import gui.MainMenuPanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -37,6 +38,8 @@ public class Game extends JPanel implements Runnable, MouseListener, MouseMotion
         addMouseMotionListener(this);
         //board = new GameBoard(WIDTH/2 - GameBoard.BOARD_WIDTH/2, HEIGHT - GameBoard.BOARD_HEIGHT - 10);
         screen = GuiScreen.getInstance();
+        screen.add("MENU", new MainMenuPanel());
+        screen.setCurrentPanel("MENU");
     }
 
     private void update() {
