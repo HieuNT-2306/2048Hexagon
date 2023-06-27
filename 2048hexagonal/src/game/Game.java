@@ -2,6 +2,9 @@ package game;
 
 import javax.swing.JPanel;
 
+import gui.GuiScreen;
+import gui.MainMenuPanel;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -9,44 +12,47 @@ import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
-public class Game extends JPanel implements Runnable, KeyListener {
+public class Game extends JPanel implements Runnable, MouseListener, MouseMotionListener, KeyListener {
     private static final long serialVersionUID = 1L;
-    public static final int WIDTH = 500;
-    public static final int HEIGHT = 800;
+    public static int WIDTH = 500;
+    public static int HEIGHT = 630;
     public static final Font mainfont = new Font("Bebas Neue Regular", Font.PLAIN, 28);
     private Thread game;
     private boolean running;
-    private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-    private GameBoard board;
-
+    private BufferedImage image;
     private long startTime;
     private long elapsed;
     private boolean set;
+    private GuiScreen screen;
+
 
     public Game() {
         setFocusable(true);
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        if (GameBoard.COLS > 4 &&  GameBoard.COLS < 7) {
+            WIDTH += (GameBoard.COLS - 4)*200;
+        }
+        image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        setPreferredSize(new Dimension(WIDTH , HEIGHT));
         addKeyListener(this);
-
-        board = new GameBoard(WIDTH/2 - GameBoard.BOARD_WIDTH/2, HEIGHT - GameBoard.BOARD_HEIGHT -10);
+        addMouseListener(this);
+        addMouseMotionListener(this);
+        //board = new GameBoard(WIDTH/2 - GameBoard.BOARD_WIDTH/2, HEIGHT - GameBoard.BOARD_HEIGHT - 10);
+        screen = GuiScreen.getInstance();
+        screen.add("MENU", new MainMenuPanel());
+        screen.setCurrentPanel("MENU");
     }
 
     private void update() {
-        if(Keyboard.pressed[KeyEvent.VK_SPACE]) {
-            System.out.println("space");
-        }
-        if(Keyboard.typed(KeyEvent.VK_W)) {
-            System.out.println("W");
-        }
-        board.update();
+        screen.update();
         Keyboard.update();
     }
 
     private void render() {
         Graphics2D g = (Graphics2D) image.getGraphics();
-        g.setColor(Color.white);
+        Color mainColor = new Color(Setting.mainColor);
+        g.setColor(mainColor);
         g.fillRect(0, 0, WIDTH, HEIGHT);
-        board.render(g);
+        screen.render(g);
         g.dispose();
         Graphics2D g2d = (Graphics2D) getGraphics();
         g2d.drawImage(image, 0, 0, null);
@@ -56,7 +62,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     public void run() {
         int fps = 0, update = 0;
         long fpsTimer = System.currentTimeMillis();
-        double nsPerUpdate = 10000000000.0 / 60;
+        double nsPerUpdate = 1000000000.0 / Setting.FPS;
         double then = System.nanoTime();
         double unprocessed = 0;
         // update queue
@@ -116,6 +122,27 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
 
     public void keyTyped(KeyEvent a) {
+
+    }
+    public void mousePressed(MouseEvent a) {
+        screen.mousePressed(a);
+    }
+    public void mouseEntered(MouseEvent a) {
+
+    }
+    public void mouseReleased(MouseEvent a) {
+        screen.mouseReleased(a);
+    }
+    public void mouseDragged(MouseEvent a) {
+        screen.mouseDragged(a);
+    }
+    public void mouseClicked(MouseEvent a) {
+
+    }
+    public void mouseMoved(MouseEvent a) {
+        screen.mouseMoved(a);
+    }
+    public void mouseExited(MouseEvent a) {
 
     }
 }
