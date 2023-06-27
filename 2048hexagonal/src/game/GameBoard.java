@@ -503,6 +503,9 @@ public class GameBoard {
         }
         this.win = win;
     }
+    public ScoreManager getScores() {
+        return scores;
+    }
 
     public Tile[][] getBoard(){
         return board;

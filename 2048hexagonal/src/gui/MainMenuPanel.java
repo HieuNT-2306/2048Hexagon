@@ -34,7 +34,7 @@ public class MainMenuPanel extends GuiPanel {
         continueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent a) {
-
+                GuiScreen.getInstance().setCurrentPanel("PLAY");
             }
         });
 
@@ -42,6 +42,7 @@ public class MainMenuPanel extends GuiPanel {
             @Override
             public void actionPerformed(ActionEvent a) {
                 GuiScreen.getInstance().setCurrentPanel("PLAY");
+                
             }
         });
 
