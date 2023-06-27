@@ -1,15 +1,19 @@
 package gui;
 
+import game.DrawUtils;
 import game.Game;
 import game.GameBoard;
 import game.ScoreManager;
 
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
-import javax.swing.ActionMap;
+import javax.imageio.ImageIO;
 
 public class PlayPanel extends GuiPanel {
     private GameBoard board;
@@ -26,13 +30,13 @@ public class PlayPanel extends GuiPanel {
     private int smallButtonWidth = 160;
     private int spacing = 20;
     private int largeButtonWidth = smallButtonWidth*2 +20;
-    private int buttonHeight;
+    private int buttonHeight = 50;
     private boolean added;
     private int alpha;
     private Font gameOverFont;
     private boolean screenshot;
 
-    public PlayPanel() {
+    public PlayPanel(boolean newGame) {
         scoreFont = Game.mainfont.deriveFont(24f);
         gameOverFont = Game.mainfont.deriveFont(70f);
         board = new GameBoard(Game.WIDTH/ 2 - GameBoard.BOARD_WIDTH/ 2, Game.HEIGHT - GameBoard.BOARD_HEIGHT - 20);
@@ -41,6 +45,16 @@ public class PlayPanel extends GuiPanel {
         mainMenu = new GuiButton(Game.WIDTH/2 - largeButtonWidth/ 2, 450, largeButtonWidth, buttonHeight);
         tryAgain = new GuiButton(mainMenu.getX(), mainMenu.getY() - spacing - buttonHeight, smallButtonWidth, buttonHeight);
         screenShot = new GuiButton(tryAgain.getX() + tryAgain.getWidth() + spacing, tryAgain.getY(), smallButtonWidth, buttonHeight);
+
+        if (newGame) {
+            board.getScores().reset();
+            board.reset();
+            alpha = 0;
+            remove(tryAgain);
+            remove(mainMenu);
+            remove(screenShot);
+            added = false;
+        }
 
         mainMenu.setText("Main Menu");
         tryAgain.setText("Try Again");
@@ -72,4 +86,69 @@ public class PlayPanel extends GuiPanel {
         });
     }
 
+    private void drawGui(Graphics2D g) {
+        timeStringF = DrawUtils.formatTime(scores.getTime());
+        bestTimeStringF = DrawUtils.formatTime(scores.getBestTime());
+        Graphics2D g2d = (Graphics2D)info.getGraphics();
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0, 0, info.getWidth(), info.getHeight());
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.setFont(scoreFont);
+        g2d.drawString("" + scores.getCurrentScore(), 30, 40);
+        g2d.setColor(Color.RED);
+        g2d.drawString("Best: " + scores.getCurrentTopScore(), 
+        Game.WIDTH - DrawUtils.getMessageWidth("Best: " + scores.getCurrentTopScore(), scoreFont, g2d) - 20, 40);
+        g2d.drawString("Fastest: " + bestTimeStringF, 
+        Game.WIDTH - DrawUtils.getMessageWidth("Fastest: " + bestTimeStringF, scoreFont, g2d) -20, 90);
+        g2d.setColor(Color.BLACK);
+        g2d.drawString("Time: " + timeStringF, 30, 90);
+        g2d.dispose();
+        g.drawImage(info, 0, 0, null);
+    }
+
+    public void drawGameOver(Graphics2D g) {
+        g.setColor(new Color(222, 222, 222, alpha));
+        g.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
+        g.setColor(Color.RED);
+        g.setFont(gameOverFont);
+        g.drawString("GAME OVER!!", Game.WIDTH/ 2 - DrawUtils.getMessageWidth("GAME OVER!!", gameOverFont, g) /2, 250);
+    }
+    @Override
+    public void update() {
+        board.update();
+        if (board.isLost()) {
+            alpha++;
+            if (alpha > 170) alpha = 170;
+        }
+    }
+
+    @Override
+    public void render(Graphics2D g) {
+        drawGui(g);
+        board.render(g);
+        if (screenshot) {
+            BufferedImage bi = new BufferedImage(Game.WIDTH, Game.HEIGHT, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = (Graphics2D)bi.getGraphics();
+            g2d.setColor(Color.WHITE);
+            g2d.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
+            drawGui(g2d);
+            board.render(g2d);
+            try{
+                ImageIO.write(bi, "gif", new File(System.getProperty("user.home") + "\\Desktop", "Screenshot" + System.nanoTime() + "gif"));
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+            screenshot = false;
+        }
+        if(board.isLost()) {
+            if (!added) {
+                added = true;
+                add(mainMenu);
+                add(screenShot);
+                add(tryAgain);
+            }
+            drawGameOver(g);
+        }
+        super.render(g);
+    }
 }

@@ -41,8 +41,7 @@ public class MainMenuPanel extends GuiPanel {
         newGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent a) {
-                GuiScreen.getInstance().setCurrentPanel("PLAY");
-                
+                GuiScreen.getInstance().setCurrentPanel("NEW GAME");
             }
         });
 
