@@ -7,8 +7,8 @@ import java.io.*;
 import java.util.Random;
 
 public class GameBoard {
-    public static int ROWS = Setting.SIZE;
-    public static int COLS = Setting.SIZE;
+    public int ROWS = Setting.SIZE;
+    public int COLS = Setting.SIZE;
     public static int WinValue = 2048;
     private final int startTiles = 2; // số ô vuông ban đầu
     private Tile[][] board;
@@ -33,10 +33,14 @@ public class GameBoard {
     private LeaderBoard lBoard;
 
     public static int SPACING = 10; // khoảng cách các ô trong bảng
-    public static int BOARD_WIDTH = (COLS + 1) * SPACING + COLS * Tile.WIDTH;
-    public static int BOARD_HEIGHT = (ROWS + 1) * SPACING + ROWS * Tile.HEIGHT;
+    public static int BOARD_WIDTH ;
+    public static int BOARD_HEIGHT ;
 
     public GameBoard(int X, int Y) {
+        this.ROWS = Setting.SIZE;
+        this.COLS = Setting.SIZE;
+        this.BOARD_WIDTH = (COLS + 1) * SPACING + COLS * Tile.WIDTH;
+        this.BOARD_HEIGHT = (ROWS + 1) * SPACING + ROWS * Tile.HEIGHT;
         this.X = X;
         this.Y = Y;
         board = new Tile[ROWS][COLS];

@@ -2,10 +2,12 @@ package game;
 
 import javax.swing.JPanel;
 
+import gui.ConfigManager;
 import gui.GuiScreen;
 import gui.LeaderboardsPanel;
 import gui.MainMenuPanel;
 import gui.PlayPanel;
+import gui.SettingsPanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,7 +18,7 @@ import java.awt.image.BufferedImage;
 
 public class Game extends JPanel implements Runnable, MouseListener, MouseMotionListener, KeyListener {
     private static final long serialVersionUID = 1L;
-    public static int WIDTH = 500;
+    public static int WIDTH = 600;
     public static int HEIGHT = 630;
     public static final Font mainfont = new Font("Bebas Neue Regular", Font.PLAIN, 28);
     private Thread game;
@@ -30,8 +32,8 @@ public class Game extends JPanel implements Runnable, MouseListener, MouseMotion
 
     public Game() {
         setFocusable(true);
-        if (GameBoard.COLS > 4 &&  GameBoard.COLS < 7) {
-            WIDTH += (GameBoard.COLS - 4)*200;
+        if (Setting.SIZE > 4 &&  Setting.SIZE < 7) {
+            WIDTH += (Setting.SIZE- 4)*200;
         }
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         setPreferredSize(new Dimension(WIDTH , HEIGHT));
@@ -44,7 +46,14 @@ public class Game extends JPanel implements Runnable, MouseListener, MouseMotion
         screen.add("PLAY", new PlayPanel(false));
         screen.add("NEW GAME", new PlayPanel(true));
         screen.add("LEADERBOARDS", new LeaderboardsPanel());
+        screen.add("SETTINGS", new SettingsPanel());
         screen.setCurrentPanel("MENU");
+        ConfigManager config = new ConfigManager();
+        ConfigManager.saveSetting("SIZE", "4");
+        ConfigManager.saveSetting("mainColor", "0xffffff");
+        ConfigManager.saveSetting("ShiftColor_tile", "0x000000");
+        ConfigManager.saveSetting("ShiftColor_board", "0x000000");
+        ConfigManager.saveSetting("FPS", "60");
     }
 
     private void update() {

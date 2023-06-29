@@ -9,7 +9,7 @@ public class ScoreManager {
     private long time;
     private long startingTime;
     private long bestTime;
-    private int[] board = new int[GameBoard.ROWS * GameBoard.COLS];
+    private int[] board = new int[Setting.SIZE * Setting.SIZE];
 
     // file
     private String filePath;
@@ -50,9 +50,9 @@ public class ScoreManager {
             writer.newLine();
             writer.write("" + 0); // time cao nhat
             writer.newLine();
-            for(int row = 0; row < GameBoard.ROWS; row++){
-                for(int col = 0; col < GameBoard.COLS; col++){
-                    if(row == GameBoard.ROWS-1 && col == GameBoard.COLS-1){
+            for(int row = 0; row < Setting.SIZE; row++){
+                for(int col = 0; col < Setting.SIZE; col++){
+                    if(row == Setting.SIZE-1 && col == Setting.SIZE-1){
                         writer.write("" + 0);
                     }
                     else writer.write(0 + "-");
@@ -80,12 +80,12 @@ public class ScoreManager {
             writer.newLine();
             writer.write("" + bestTime);
             writer.newLine();
-            for(int row = 0; row < GameBoard.ROWS; row++){
-                for(int col = 0; col < GameBoard.COLS; col++){
-                    int location = row * GameBoard.COLS + col;
+            for(int row = 0; row < Setting.SIZE; row++){
+                for(int col = 0; col < Setting.SIZE; col++){
+                    int location = row * Setting.SIZE + col;
                     Tile tile = gBoard.getBoard()[row][col];
                     this.board[location] = tile != null ? tile.getValue() : 0;
-                    if(row == GameBoard.ROWS-1 && col == GameBoard.COLS-1){
+                    if(row == Setting.SIZE-1 && col == Setting.SIZE-1){
                         writer.write("" + board[location]);
                     }
                     else writer.write(board[location] + "-");

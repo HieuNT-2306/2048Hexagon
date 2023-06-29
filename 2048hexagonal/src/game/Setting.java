@@ -1,9 +1,12 @@
 package game;
 
+import gui.ConfigManager;
+
 public class Setting {
-    public static int SIZE = 5;
-    public static int FPS = 60;
-    public static int ShiftColor_tile = 0x000000;
-    public static int mainColor = 0xffffff;
-    public static int ShiftColor_board = 0x000000;
+    public static int SIZE = Integer.parseInt(ConfigManager.getSetting("SIZE"));
+    public static int FPS = Integer.parseInt(ConfigManager.getSetting("FPS"));
+    public static int ShiftColor_tile = Integer.decode(ConfigManager.getSetting("ShiftColor_tile"));
+    public static int mainColor = Integer.decode(ConfigManager.getSetting("mainColor"));
+    public static int ShiftColor_board = Integer.decode(ConfigManager.getSetting("ShiftColor_board"));
+
 }
